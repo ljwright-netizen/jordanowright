@@ -1,0 +1,10 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; background: #090909; }
+  #root { min-height: 100%; display: flex; flex-direction: column; align-items: stretch; background: #090909; }
+  img { display: block; }
+}

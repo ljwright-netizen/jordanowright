@@ -1,0 +1,231 @@
+/* Portfolio custom styles */
+
+.page { width: 100%; position: relative; }
+
+/* Footer contact links (email / LinkedIn / Instagram) */
+.contact-link { color: #494e5b; }
+.contact-pulse {
+  animation: contactPulse 5s ease-in-out 1;
+}
+@keyframes contactPulse {
+  0%, 100% { color: #494e5b; text-shadow: none; }
+  50% { color: #3f9f53; text-shadow: 0 0 10px rgba(63, 159, 83, 0.85); }
+}
+
+/* Chat widget — bubble + option list entrance animations */
+@keyframes chatBubbleIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.chat-bubble-in { animation: chatBubbleIn 0.32s ease; }
+
+@keyframes chatOptionIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.chat-option-in { animation: chatOptionIn 0.35s ease; }
+
+/* Sent question bubble — snappier float-up-and-in with a slight overshoot,
+   distinct from the calmer bot-bubble fade. */
+@keyframes chatSendIn {
+  from { opacity: 0; transform: translateY(16px) scale(0.96); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+.chat-send-in { animation: chatSendIn 0.3s cubic-bezier(0.34, 1.2, 0.64, 1); }
+
+/* Three-dot typing indicator */
+@keyframes typingBounce {
+  0%, 60%, 100% { transform: translateY(0); opacity: 0.5; }
+  30% { transform: translateY(-4px); opacity: 1; }
+}
+.typing-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #9a9a9a;
+  animation: typingBounce 1.1s ease-in-out infinite;
+}
+.typing-dot:nth-child(2) { animation-delay: 0.15s; }
+.typing-dot:nth-child(3) { animation-delay: 0.3s; }
+
+/* Soft fade at the scrollable chat log's top/bottom edges — messages
+   dissolve as they scroll toward either edge instead of clipping. */
+.chat-scroll-fade {
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, black 28px, black calc(100% - 28px), transparent 100%);
+  mask-image: linear-gradient(to bottom, transparent 0, black 28px, black calc(100% - 28px), transparent 100%);
+}
+
+/* Photo grid layout */
+.photo-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 360px);
+  grid-template-rows: 360px 360px 360px;
+  width: 1440px;
+}
+
+.cell { position: relative; overflow: hidden; }
+
+.cell-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+}
+
+/* Nav */
+.nav-new {
+  font-size: 16.376px;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  color: #e9efff;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  text-decoration-thickness: 1px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.nav-link {
+  font-size: 16.376px;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  color: #494e5b;
+  text-decoration: none;
+  position: relative;
+  padding-bottom: 2px;
+  transition: color 0.2s ease;
+  white-space: nowrap;
+}
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background: #e9efff;
+  transition: width 0.2s ease;
+}
+.nav-link:hover { color: #e9efff; }
+.nav-link:hover::after { width: 100%; }
+
+/* Letter reveal animation (hero heading + SunFans) */
+@keyframes letterReveal {
+  to { opacity: 1; }
+}
+
+/* Project grid hover overlay */
+.cell-project { cursor: pointer; }
+.cell-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(9, 9, 9, 0.65);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+  z-index: 2;
+  pointer-events: none;
+}
+.cell-project:hover .cell-overlay { opacity: 1; }
+
+/* Arrow nav buttons (hero left/right) */
+.arrow-btn {
+  cursor: pointer;
+  transition: transform 0.18s ease, opacity 0.18s ease;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.arrow-btn:hover {
+  transform: scale(1.12);
+  opacity: 0.8;
+}
+.arrow-btn:active {
+  transform: scale(0.93);
+  opacity: 1;
+  transition-duration: 0.08s;
+}
+
+/* Chat suggest buttons */
+.suggest-btn {
+  border: 1px dashed #f2f2f2;
+  border-radius: 20px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  color: #f2f2f2;
+  font-size: 16.376px;
+  white-space: nowrap;
+  background: transparent;
+  cursor: pointer;
+  transition: background 0.18s ease, border-color 0.18s ease;
+}
+.suggest-btn:hover {
+  background: rgba(255,255,255,0.1);
+  border-style: solid;
+}
+.chat-input-area {
+  transition: background 0.18s ease;
+}
+.chat-input-area:hover,
+.chat-input-area:focus-visible {
+  background: #e8e8e8 !important;
+}
+.chat-input-area:focus {
+  outline: none;
+}
+
+/* Speech bubbles (descriptor cards) */
+.speech-bubble {
+  position: relative;
+  background: #3f9f53;
+  border-radius: 16px;
+  padding: 22px 24px;
+  max-width: 300px;
+  opacity: 0;
+  transform: scale(0.96) translateY(8px);
+  transition: opacity 0.45s ease, transform 0.45s ease;
+}
+.speech-bubble.is-visible {
+  opacity: 1;
+  transform: none;
+}
+/* Tail pointing RIGHT */
+.speech-bubble-right::after {
+  content: '';
+  position: absolute;
+  right: -15px;
+  top: 50%;
+  transform: translateY(-50%);
+  border: 9px solid transparent;
+  border-left: 15px solid #3f9f53;
+  border-right: 0;
+}
+/* Tail pointing LEFT */
+.speech-bubble-left::after {
+  content: '';
+  position: absolute;
+  left: -15px;
+  top: 50%;
+  transform: translateY(-50%);
+  border: 9px solid transparent;
+  border-right: 15px solid #3f9f53;
+  border-left: 0;
+}
+/* Tail pointing DOWN */
+.speech-bubble-down::after {
+  content: '';
+  position: absolute;
+  bottom: -15px;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 9px solid transparent;
+  border-top: 15px solid #3f9f53;
+  border-bottom: 0;
+}
