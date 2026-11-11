@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { A } from './assets.js'
 import { LetterReveal, useLATime, usePageZoom, Divider, LogoBookmark, HeaderIdentity, StickyNav, DESCRIPTION_TEXT_STYLE } from './shared.jsx'
+import { useIsMobile, MobileProductPage } from './mobile.jsx'
 
 /* ── Transfit product page — Figma node 322:1421 "Transfit Page", the actual
    dedicated case-study frame for this product (distinct from the generic
@@ -47,7 +48,7 @@ const LETTER_COLUMN = [
 const HEADER_HEIGHT = 130 // divider(90) + nav(40), matches current Figma exactly
 const CONTENT_HEIGHT = 2893 - HEADER_HEIGHT
 
-export default function TransfitPage() {
+function DesktopTransfitPage() {
   const time = useLATime()
   usePageZoom()
 
@@ -204,5 +205,29 @@ export default function TransfitPage() {
         </div>
       </div>
     </div>
+  )
+}
+
+const MOBILE_BLOCKS = [
+      { img: A.transfitHero, alt: 'Transfit on a laptop', ratio: 5760 / 3880 },
+      { text: 'AI agent for transit planners, cleaning and merging agency data to turn plain-language requests into optimized stop placements, route networks, and cost estimates.' },
+      { img: A.transfitScreenshotLocations, alt: 'Transfit locations view', ratio: 1102 / 279 },
+      { img: A.transfitScreenshotMap, alt: 'Transfit map view', ratio: 1102 / 558 },
+      { text: 'Planners define a study area, upload their own data or pull it in automatically, then describe their goals in plain language, and the agent configures the network and runs the optimization. Multiple scenarios can be compared side by side with full cost and coverage breakdowns before exporting.' },
+      { img: A.transfitScreenshotNetwork, alt: 'Transfit network view', ratio: 1385 / 706 },
+    ]
+
+export default function TransfitPage() {
+  const isMobile = useIsMobile()
+  if (!isMobile) return <DesktopTransfitPage />
+  return (
+    <MobileProductPage
+      docTitle="Public Transit Planning"
+      category="Software Engineering"
+      titleLines={["Public Transit", "Planning"]}
+      lettering="Transfit"
+      link="https://www.usetransfit.com/"
+      blocks={MOBILE_BLOCKS}
+    />
   )
 }

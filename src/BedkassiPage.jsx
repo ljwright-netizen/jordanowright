@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { A } from './assets.js'
 import { LetterReveal, useLATime, usePageZoom, Divider, LogoBookmark, HeaderIdentity, StickyNav, DESCRIPTION_TEXT_STYLE } from './shared.jsx'
+import { useIsMobile, MobileProductPage } from './mobile.jsx'
 
 /* ── Bedkassi product page — Figma node 334:284 "Bedkassi Page", pulled
    directly via MCP. Same header/nav/no-tagline structure as the other
@@ -48,7 +49,7 @@ const HEADER_HEIGHT = 130 // divider(90) + nav(40), matches Figma exactly
 const FRAME_HEIGHT = 1958
 const CONTENT_HEIGHT = FRAME_HEIGHT - HEADER_HEIGHT
 
-export default function BedkassiPage() {
+function DesktopBedkassiPage() {
   const time = useLATime()
   usePageZoom()
 
@@ -173,5 +174,34 @@ export default function BedkassiPage() {
         </div>
       </div>
     </div>
+  )
+}
+
+const MOBILE_BLOCKS = [
+      { img: A.bedkassiAdjustable1, alt: 'Adjustable Bedside Table, tray height', ratio: 535 / 702, flip: true, crop: { left: '0%', top: '-18.34%', width: '116.28%', height: '118.27%' } },
+      { row: [
+        { img: A.bedkassiAdjustable2, alt: 'Adjustable Bedside Table, nightstand height', ratio: 494 / 701, flip: true, crop: { left: '-5.74%', top: '-15.52%', width: '122.89%', height: '115.52%' } },
+        { img: A.bedkassiAdjustable3, alt: 'Adjustable Bedside Table, desk height', ratio: 526 / 702, flip: true, crop: { left: '-2.46%', top: '0.08%', width: '110.47%', height: '110.47%' } },
+      ] },
+      { bold: true, text: 'Adjustable bedside table shifting between three levels of use, nightstand, bed tray, and desk, built to be easily moved between them.' },
+      { img: A.bedkassiDetail, alt: 'Adjustable Bedside Table, height-pin detail', ratio: 1087 / 716, crop: { left: '-22.78%', top: '-0.02%', width: '138.96%', height: '100.07%' } },
+      { row: [
+        { img: A.bedkassiCallout1, alt: 'Height-adjustment pin, upper position', ratio: 1 },
+        { img: A.bedkassiCallout2, alt: 'Height-adjustment pin, lower position', ratio: 1 },
+      ] },
+      { bold: true, text: 'Height adjusts by pulling a side pin and repositioning it into one of three preset holes, a fast, tool-free way to shift the table between its nightstand, tray, and desk configurations.' },
+    ]
+
+export default function BedkassiPage() {
+  const isMobile = useIsMobile()
+  if (!isMobile) return <DesktopBedkassiPage />
+  return (
+    <MobileProductPage
+      docTitle="Bedkassi"
+      category="Furniture Design"
+      titleLines={["Adjustable", "Bedside Table"]}
+      lettering="Bedkassi"
+      blocks={MOBILE_BLOCKS}
+    />
   )
 }

@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { A } from './assets.js'
 import { LetterReveal, useLATime, usePageZoom, Divider, LogoBookmark, HeaderIdentity, StickyNav, DESCRIPTION_TEXT_STYLE } from './shared.jsx'
+import { useIsMobile, MobileProductPage } from './mobile.jsx'
 
 /* ── Modular Speaker product page — Figma node 334:378 "Speaker Page",
    pulled directly via MCP. Same header/nav/no-tagline structure as the
@@ -36,7 +37,7 @@ const HEADER_HEIGHT = 130 // divider(90) + nav(40), matches Figma exactly
 const FRAME_HEIGHT = 3237
 const CONTENT_HEIGHT = FRAME_HEIGHT - HEADER_HEIGHT
 
-export default function SpeakerPage() {
+function DesktopSpeakerPage() {
   const time = useLATime()
   usePageZoom()
 
@@ -152,5 +153,27 @@ export default function SpeakerPage() {
         </div>
       </div>
     </div>
+  )
+}
+
+const MOBILE_BLOCKS = [
+      { img: A.speakerHero, alt: 'Modular speaker', ratio: 835 / 1085 },
+      { lead: 'One system, every setting.', text: 'Four detachable units connect into one speaker or split apart, compact for portability, full-sized for a room. The circular housing rests stably on any side.' },
+      { img: A.speakerModular, alt: 'Modular speaker, assembled configuration', ratio: 1232.813 / 850, rotate: true },
+      { lead: 'Built to adapt.', text: 'Intuitive docking make the modular speaker easy to configure for any setting, shaped by testing across beach trips, room setups, and parties.' },
+      { img: A.speakerBottom, alt: 'Modular speaker, detail view', ratio: 1157 / 1245 },
+    ]
+
+export default function SpeakerPage() {
+  const isMobile = useIsMobile()
+  if (!isMobile) return <DesktopSpeakerPage />
+  return (
+    <MobileProductPage
+      docTitle="Speaker"
+      category="Industrial Design"
+      titleLines={["Speaker"]}
+      lettering="Speaker"
+      blocks={MOBILE_BLOCKS}
+    />
   )
 }

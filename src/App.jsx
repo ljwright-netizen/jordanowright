@@ -15,6 +15,7 @@ import {
   LetterReveal, useLATime, usePageZoom,
   Divider, LogoBookmark, HeaderIdentity, StickyNav,
 } from './shared.jsx'
+import { useIsMobile, MobileShell, MobileFooter, GUTTER } from './mobile.jsx'
 
 /* ── Hero carousel content ────────────────────────────────────────────────
    Loops sunfans → bedkassi → transfit → sunfans via modulo wrap in
@@ -234,7 +235,7 @@ function TypingIndicator() {
 
 /* ── Animated suggested-question list — FLIP-slides remaining items into
    place when one is removed/appended, rather than snapping. ── */
-function ChatOptionList({ items, onSelect, disabled }) {
+function ChatOptionList({ items, onSelect, disabled, padX = 28 }) {
   const containerRef = useRef(null)
   const prevRects = useRef({})
 
@@ -262,7 +263,7 @@ function ChatOptionList({ items, onSelect, disabled }) {
   }, [items])
 
   return (
-    <div ref={containerRef} style={{ display: 'flex', flexDirection: 'column', gap: 8, padding: '0 28px', marginBottom: 12 }}>
+    <div ref={containerRef} style={{ display: 'flex', flexDirection: 'column', gap: 8, padding: `0 ${padX}px`, marginBottom: 12, alignItems: 'flex-start' }}>
       {items.map((idx) => (
         <button
           key={idx}
@@ -282,7 +283,7 @@ function ChatOptionList({ items, onSelect, disabled }) {
 /* ── Chat widget ──────────────────────────────────────────────────────────── */
 const CHAT_ANSWER_DELAY_MS = 800
 
-function ChatWidget() {
+function ChatWidget({ mobile = false }) {
   // Greeting is message zero — part of the same scrollable log/history as
   // everything else, not a pinned header, so it scrolls away like a real thread.
   const [messages, setMessages] = useState([{ id: 'greeting', sender: 'bot', text: 'Hey! Any questions?' }])
@@ -339,10 +340,10 @@ function ChatWidget() {
   return (
     <div
       style={{
-        width: 671,
-        height: 582,
+        width: mobile ? '100%' : 671,
+        height: mobile ? 540 : 582,
         background: 'rgba(224,224,225,0.9)',
-        borderRadius: 30,
+        borderRadius: mobile ? 22 : 30,
         position: 'relative',
         flexShrink: 0,
         display: 'flex',
@@ -362,7 +363,7 @@ function ChatWidget() {
           display: 'flex',
           flexDirection: 'column',
           gap: 8,
-          padding: '28px 28px 12px',
+          padding: mobile ? '20px 16px 12px' : '28px 28px 12px',
         }}
       >
         {messages.map((m, i) => (
@@ -377,12 +378,12 @@ function ChatWidget() {
       </div>
 
       {/* Suggested question buttons */}
-      <ChatOptionList items={queue.visible} onSelect={handleSelect} disabled={pendingIdx !== null} />
+      <ChatOptionList items={queue.visible} onSelect={handleSelect} disabled={pendingIdx !== null} padX={mobile ? 16 : 28} />
 
       {/* Message input row */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '0 28px 28px' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: mobile ? 8 : 12, padding: mobile ? '0 16px 18px' : '0 28px 28px' }}>
         {/* Social icon links */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexShrink: 0 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: mobile ? 6 : 10, flexShrink: 0 }}>
           {/* LinkedIn */}
           <a href="https://www.linkedin.com/in/lloyd-jordano-wright" target="_blank" rel="noreferrer" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 34, height: 34, borderRadius: '50%', background: '#0a66c2', flexShrink: 0 }}>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="#ffffff">
@@ -413,6 +414,7 @@ function ChatWidget() {
             borderRadius: 20,
             height: 38,
             flex: 1,
+            minWidth: 0,
             display: 'flex',
             alignItems: 'center',
             padding: '0 16px',
@@ -427,9 +429,9 @@ function ChatWidget() {
 }
 
 /* ── Skill tag (icon + background) ───────────────────────────────────────── */
-function SkillTag({ logo, width }) {
+function SkillTag({ logo, width, fill }) {
   return (
-    <div style={{ position: 'relative', width, height: 60, flexShrink: 0 }}>
+    <div style={{ position: 'relative', width, height: fill ? '100%' : 60, flexShrink: 0 }}>
       <img src={A.rectangle86} alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
       <img src={logo}          alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
     </div>
@@ -437,7 +439,7 @@ function SkillTag({ logo, width }) {
 }
 
 /* ── About panel ──────────────────────────────────────────────────────────── */
-function AboutPanel() {
+function AboutPanel({ mobile = false }) {
   const tags = [
     { logo: A.rectangle87, w: 122.356 },
     { logo: A.rectangle88, w: 122.836 },
@@ -447,7 +449,7 @@ function AboutPanel() {
   ]
 
   return (
-    <div style={{ width: 627 }}>
+    <div style={{ width: mobile ? '100%' : 627 }}>
       {/* Profile photo, with "About" label + name stacked to its right */}
       <div style={{ display: 'flex', alignItems: 'flex-end', gap: 17, marginBottom: 20 }}>
         <div style={{ position: 'relative', width: 89, height: 89, borderRadius: 0, overflow: 'hidden', flexShrink: 0 }}>
@@ -477,14 +479,22 @@ function AboutPanel() {
       </div>
 
       {/* Short divider — CSS line extending to right edge (692px wide) */}
-      <div style={{ width: 692, height: 1, background: 'rgba(73,78,91,0.35)', margin: '24px 0' }} />
+      <div style={{ width: mobile ? '100%' : 692, height: 1, background: 'rgba(73,78,91,0.35)', margin: '24px 0' }} />
 
       {/* Skill tags */}
-      <div style={{ display: 'flex', gap: 13.5 }}>
-        {tags.map(({ logo, w }, i) => (
-          <SkillTag key={i} logo={logo} width={w} />
-        ))}
-      </div>
+      {mobile ? (
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10 }}>
+          {tags.map(({ logo, w }, i) => (
+            <div key={i} style={{ aspectRatio: `${w} / 60`, position: 'relative' }}><SkillTag logo={logo} width="100%" fill /></div>
+          ))}
+        </div>
+      ) : (
+        <div style={{ display: 'flex', gap: 13.5 }}>
+          {tags.map(({ logo, w }, i) => (
+            <SkillTag key={i} logo={logo} width={w} />
+          ))}
+        </div>
+      )}
     </div>
   )
 }
@@ -501,8 +511,8 @@ function ScrollManager() {
   return null
 }
 
-/* ── HomePage ─────────────────────────────────────────────────────────────── */
-function HomePage() {
+/* ── DesktopHome ─────────────────────────────────────────────────────────────── */
+function DesktopHome() {
   const time      = useLATime()
   const location  = useLocation()
   const navigate  = useNavigate()
@@ -819,6 +829,175 @@ function HomePage() {
       </footer>
     </div>
   )
+}
+
+/* ── Mobile homepage ──────────────────────────────────────────────────────
+   Same content as DesktopHome, restacked for phones: hero carousel (with
+   swipe), a 2-column project grid that keeps each tile's desktop aspect
+   ratio (so the Figma crops still hold), then chat + about full-width. ── */
+const MOBILE_HERO = [
+  { img: A.sconce, fit: 'cover', position: '50% 45%', scale: 1.45 },
+  { img: A.bedkassiHero, fit: 'cover', position: '35% 50%', flip: true },
+  { img: A.transfitHero, fit: 'contain', position: '50% 35%', scale: 1.15 },
+]
+
+const MOBILE_TILES = [
+  { desc: 'Growing up across Ecuador, South Africa, and the Philippines gave me something most design curricula can’t teach.' },
+  { slug: 'transfit', category: 'Software Engineering', title: 'Transfit', ratio: 1, img: A.rectangle8 },
+  { slug: 'sunfans', category: 'Industrial Design', title: 'Sunfan', ratio: 1, img: A.rectangle15, crop: { width: '313.59%', height: '405.94%', left: '-51.98%', top: '-152.87%' } },
+  { slug: 'eco-tourism-hub', category: 'Sustainable Architecture', title: 'Eco-Tourism Hub', ratio: 2, span: true, img: A.rectangle9, crop: { width: '128.89%', height: '145%', left: '0%', top: '0%' } },
+  { slug: 'healhaze', category: 'Branding & Product Design', title: 'HealHaze', ratio: 0.5, img: A.rectangle12, crop: { width: '112.5%', height: '100%', left: '-12.49%', top: '-0.04%' } },
+  { slug: 'banana-grip', category: 'Product Design', title: 'NonSlip BananaGrip', ratio: 0.5, img: A.rectangle11, crop: { width: '298.98%', height: '100%', left: '-34.36%', top: '-0.06%' } },
+  { desc: 'From childhood sketchbooks to 3D renders and material workshops, the drive has always been the same. To create things that earn their place in the world.', logoRight: true },
+  { slug: 'speaker', category: 'Industrial Design', title: 'Speaker', ratio: 1, img: A.rectangle14, crop: { width: '69.88%', height: '101.35%', left: '15.16%', top: '-0.08%' } },
+  { slug: 'bedkassi', category: 'Furniture Design', title: 'Bedkassi', ratio: 1, img: A.rectangle13, crop: { width: '150.32%', height: '100%', left: '-25.17%', top: '0.01%' } },
+]
+
+function MobilePhotoGrid() {
+  return (
+    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2 }}>
+      {MOBILE_TILES.map((t, i) => {
+        if (t.desc) {
+          const logo = <img src={A.group1White} alt="LJW" style={{ width: 72, height: 22, marginLeft: t.logoRight ? 'auto' : 0 }} />
+          const rule = <div style={{ height: 1, background: 'rgba(255,255,255,0.15)', margin: '20px 0' }} />
+          return (
+            <div key={i} style={{ gridColumn: 'span 2', padding: `36px ${GUTTER}px 32px`, display: 'flex', flexDirection: 'column' }}>
+              {!t.logoRight && <>{logo}{rule}</>}
+              <p style={{ fontSize: 18, lineHeight: 1.45, color: '#fff' }}>{t.desc}</p>
+              {t.logoRight && <>{rule}{logo}</>}
+            </div>
+          )
+        }
+        return (
+          <Link key={i} to={`/projects/${t.slug}`} className="m-tile" style={{ aspectRatio: String(t.ratio), gridColumn: t.span ? 'span 2' : undefined }}>
+            {t.crop
+              ? <img src={t.img} alt="" style={{ position: 'absolute', maxWidth: 'none', ...t.crop }} />
+              : <img src={t.img} alt="" className="cell-img" />}
+            <div className="m-tile-label">
+              <span style={{ fontSize: 10, color: '#e9efff', letterSpacing: '0.1em', opacity: 0.7 }}>{t.category}</span>
+              <span style={{ fontSize: 17, color: '#e9efff' }}>{t.title}</span>
+            </div>
+          </Link>
+        )
+      })}
+    </div>
+  )
+}
+
+function MobileHome() {
+  const location = useLocation()
+  const navigate = useNavigate()
+  const [active, setActive] = useState(0)
+  const [shown, setShown] = useState(0)
+  const [fading, setFading] = useState(false)
+  const fadeTimer = useRef(null)
+  const touchX = useRef(null)
+  const [contactPulse, setContactPulse] = useState(false)
+  useEffect(() => () => clearTimeout(fadeTimer.current), [])
+
+  const goTo = (index) => {
+    const next = ((index % HERO_PROJECTS.length) + HERO_PROJECTS.length) % HERO_PROJECTS.length
+    if (next === active) return
+    setActive(next)
+    setFading(true)
+    clearTimeout(fadeTimer.current)
+    fadeTimer.current = setTimeout(() => { setShown(next); setFading(false) }, HERO_FADE_MS)
+  }
+  const fade = { opacity: fading ? 0 : 1, transition: `opacity ${HERO_FADE_MS}ms ease` }
+
+  useEffect(() => {
+    const handler = () => setContactPulse(true)
+    window.addEventListener('contact-pulse', handler)
+    return () => window.removeEventListener('contact-pulse', handler)
+  }, [])
+  useEffect(() => {
+    const state = location.state
+    if (!state?.scrollTo) return
+    requestAnimationFrame(() => {
+      document.getElementById(state.scrollTo)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      if (state.pulseContact) setContactPulse(true)
+    })
+    navigate(location.pathname, { replace: true, state: null })
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
+  const project = HERO_PROJECTS[shown]
+  const hero = MOBILE_HERO[shown]
+  const arrow = (dir) => (
+    <button
+      aria-label={dir < 0 ? 'Previous project' : 'Next project'}
+      onClick={() => goTo(active + dir)}
+      style={{ width: 44, height: 44, borderRadius: '50%', border: 'none', background: 'rgba(217,217,217,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}
+    >
+      <svg width="14" height="22" viewBox="0 0 14 22" fill="none" style={{ transform: dir > 0 ? 'scaleX(-1)' : undefined }}>
+        <path d="M11.5 2L2.5 11L11.5 20" stroke="white" strokeWidth="3.2" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    </button>
+  )
+
+  return (
+    <MobileShell
+      headerExtra={
+        <p style={{ marginTop: 16, fontSize: 26, color: '#fff', lineHeight: 1.15, letterSpacing: '-0.01em' }}>
+          <LetterReveal text="Hi, I'm Jordano, a designer creating physical and digital products that bring new ideas into everyday life." spread={600} />
+        </p>
+      }
+      footer={<MobileFooter pulse={contactPulse} onPulseEnd={() => setContactPulse(false)} />}
+    >
+      <section id="projects" style={{ paddingTop: 24 }}>
+        <div style={{ padding: `0 ${GUTTER}px`, minHeight: 92, ...fade }}>
+          <p style={{ fontSize: 13, color: '#494e5b', letterSpacing: '0.07em' }}>{project.category}</p>
+          <p style={{ fontSize: 34, color: '#e9efff', lineHeight: 1.05, letterSpacing: '-0.015em', marginTop: 2 }}>
+            {project.titleLines.map((l, i) => <span key={i} style={{ display: 'block' }}>{l}</span>)}
+          </p>
+        </div>
+
+        <div
+          onTouchStart={(e) => { touchX.current = e.touches[0].clientX }}
+          onTouchEnd={(e) => {
+            if (touchX.current == null) return
+            const dx = e.changedTouches[0].clientX - touchX.current
+            if (Math.abs(dx) > 40) goTo(active + (dx < 0 ? 1 : -1))
+            touchX.current = null
+          }}
+          style={{ position: 'relative', marginTop: 16, aspectRatio: '4 / 5', overflow: 'hidden' }}
+        >
+          <p style={{
+            position: 'absolute', left: 0, bottom: -14, margin: 0, pointerEvents: 'none',
+            fontFamily: '"eco", Georgia, serif', fontSize: '31vw', color: '#e9efff', lineHeight: 1,
+            whiteSpace: 'nowrap', ...fade,
+          }}>
+            <LetterReveal key={shown} text={project.lettering} startDelay={150} spread={350} />
+          </p>
+          <div style={{ position: 'absolute', inset: 0, ...fade }}>
+            <img src={hero.img} alt={project.titleLines.join(' ')} style={{ width: '100%', height: '100%', objectFit: hero.fit, objectPosition: hero.position, transform: `${hero.flip ? 'scaleX(-1)' : ''} scale(${hero.scale || 1})` }} />
+          </div>
+        </div>
+
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: `14px ${GUTTER}px 22px` }}>
+          {arrow(-1)}
+          <div style={{ display: 'flex', gap: 10 }}>
+            {HERO_PROJECTS.map((_, i) => (
+              <button key={i} aria-label={`Show project ${i + 1}`} onClick={() => goTo(i)} style={{ width: 12, height: 12, padding: 0, border: 'none', borderRadius: '50%', background: active === i ? '#3F9F53' : '#494E5B', transition: 'background 0.2s', cursor: 'pointer' }} />
+            ))}
+          </div>
+          {arrow(1)}
+        </div>
+      </section>
+
+      <section id="work" style={{ scrollMarginTop: 40 }}>
+        <MobilePhotoGrid />
+      </section>
+
+      <section id="about" style={{ scrollMarginTop: 40, padding: `40px ${GUTTER}px 48px`, display: 'flex', flexDirection: 'column', gap: 40 }}>
+        <ChatWidget mobile />
+        <AboutPanel mobile />
+      </section>
+    </MobileShell>
+  )
+}
+
+function HomePage() {
+  return useIsMobile() ? <MobileHome /> : <DesktopHome />
 }
 
 /* ── App ──────────────────────────────────────────────────────────────────── */

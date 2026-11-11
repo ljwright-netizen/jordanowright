@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { A } from './assets.js'
 import { LetterReveal, useLATime, usePageZoom, Divider, LogoBookmark, HeaderIdentity, StickyNav, DESCRIPTION_TEXT_STYLE } from './shared.jsx'
+import { useIsMobile, MobileProductPage } from './mobile.jsx'
 
 /* ── HealHaze product page — Figma node 334:2 "Healhaze Page", pulled
    directly via MCP. Same header/nav/no-tagline structure as the other
@@ -29,7 +30,7 @@ const HEADER_HEIGHT = 130 // divider(90) + nav(40), matches Figma exactly
 const FRAME_HEIGHT = 1631
 const CONTENT_HEIGHT = FRAME_HEIGHT - HEADER_HEIGHT
 
-export default function HealHazePage() {
+function DesktopHealHazePage() {
   const time = useLATime()
   usePageZoom()
 
@@ -116,5 +117,27 @@ export default function HealHazePage() {
         </div>
       </div>
     </div>
+  )
+}
+
+const MOBILE_BLOCKS = [
+      { text: 'Brand identity and product design for a wellness startup, centered on a nebulizing humidifier with an IV-bag-inspired reservoir for respiratory vitamin delivery.' },
+      { row: [
+        { img: A.healhazePosterBlue, alt: 'HealHaze poster, blue sky background', ratio: 564.188 / 1003 },
+        { img: A.healhazePosterGray, alt: 'HealHaze poster, gray background', ratio: 564.188 / 1003 },
+      ] },
+    ]
+
+export default function HealHazePage() {
+  const isMobile = useIsMobile()
+  if (!isMobile) return <DesktopHealHazePage />
+  return (
+    <MobileProductPage
+      docTitle="HealHaze"
+      category="Branding & Product Design"
+      titleLines={["HealHaze", "Vitamin Cocktails"]}
+      lettering="HealHaze"
+      blocks={MOBILE_BLOCKS}
+    />
   )
 }
