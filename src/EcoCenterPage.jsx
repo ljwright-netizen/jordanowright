@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { A } from './assets.js'
 import { LetterReveal, useLATime, usePageZoom, Divider, LogoBookmark, HeaderIdentity, StickyNav, DESCRIPTION_TEXT_STYLE } from './shared.jsx'
+import { useIsMobile, MobileProductPage } from './mobile.jsx'
 
 /* ── Eco-Tourism Hub product page — Figma node 334:96 "Ecocenter Page",
    pulled directly via MCP. Same header/nav/no-tagline structure as the
@@ -33,7 +34,7 @@ const HEADER_HEIGHT = 130 // divider(90) + nav(40), matches Figma exactly
 const FRAME_HEIGHT = 2469
 const CONTENT_HEIGHT = FRAME_HEIGHT - HEADER_HEIGHT
 
-export default function EcoCenterPage() {
+function DesktopEcoCenterPage() {
   const time = useLATime()
   usePageZoom()
 
@@ -150,5 +151,31 @@ export default function EcoCenterPage() {
         </div>
       </div>
     </div>
+  )
+}
+
+const MOBILE_BLOCKS = [
+      { text: "Eco-tourism hub proposal replacing a pig slaughterhouse, pitched to the mayor of Sant'Angelo in Pontano, Italy, with renderings built from real topographic data." },
+      { img: A.ecocenterPerspectiveTop, alt: 'Eco Tourism Hub perspective render', ratio: 646 / 385 },
+      { img: A.ecocenterPerspectiveMain, alt: 'Eco Tourism Hub perspective render', ratio: 1073 / 604 },
+      { text: "Design decisions were grounded in a census I personally conducted, surveying over 80% of the town's active population to shape the center around actual community needs." },
+      { img: A.ecocenterPerspectiveCanal, alt: 'Eco Tourism Hub perspective render', ratio: 1073 / 604 },
+      { row: [
+        { img: A.ecocenterPerspectiveLeft, alt: 'Eco Tourism Hub perspective render', ratio: 517 / 291 },
+        { img: A.ecocenterPerspectiveRight, alt: 'Eco Tourism Hub perspective render', ratio: 520 / 291 },
+      ] },
+    ]
+
+export default function EcoCenterPage() {
+  const isMobile = useIsMobile()
+  if (!isMobile) return <DesktopEcoCenterPage />
+  return (
+    <MobileProductPage
+      docTitle="Eco Tourism Hub"
+      category="Sustainable Architecture"
+      titleLines={["Eco Tourism Hub"]}
+      lettering="EcoCenter"
+      blocks={MOBILE_BLOCKS}
+    />
   )
 }

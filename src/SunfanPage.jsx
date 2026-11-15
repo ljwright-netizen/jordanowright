@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { A } from './assets.js'
 import { LetterReveal, useLATime, usePageZoom, Divider, LogoBookmark, HeaderIdentity, StickyNav, DESCRIPTION_TEXT_STYLE } from './shared.jsx'
+import { useIsMobile, MobileProductPage } from './mobile.jsx'
 
 /* ── Sunfan product page — Figma node 322:1515 "Sunfan Page", pulled
    directly via MCP. Same header/nav/no-tagline structure as the other
@@ -29,7 +30,7 @@ const HEADER_HEIGHT = 130 // divider(90) + nav(40), matches Figma exactly
 const FRAME_HEIGHT = 1335
 const CONTENT_HEIGHT = FRAME_HEIGHT - HEADER_HEIGHT
 
-export default function SunfanPage() {
+function DesktopSunfanPage() {
   const time = useLATime()
   usePageZoom()
 
@@ -121,5 +122,25 @@ export default function SunfanPage() {
         </div>
       </div>
     </div>
+  )
+}
+
+const MOBILE_BLOCKS = [
+      { text: 'Wall sconce built on traditional Filipino fiber-weaving techniques, radial abaca cordage hand-wound in concentric rings to mimic the intensity of the Philippine sun, designed for the high-glare, high-humidity conditions of beachfront resorts.' },
+      { img: A.sunfanRoom, alt: 'Wall sconce installed in a room', ratio: 811 / 1048.348 },
+      { img: A.sunfanSconceDetail, alt: 'Wall sconce detail', ratio: 323.822 / 308 },
+    ]
+
+export default function SunfanPage() {
+  const isMobile = useIsMobile()
+  if (!isMobile) return <DesktopSunfanPage />
+  return (
+    <MobileProductPage
+      docTitle="Wall Sconce"
+      category="Industrial Design"
+      titleLines={["Wall Sconce"]}
+      lettering="SunFan"
+      blocks={MOBILE_BLOCKS}
+    />
   )
 }

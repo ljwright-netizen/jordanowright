@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { A } from './assets.js'
 import { LetterReveal, useLATime, usePageZoom, Divider, LogoBookmark, HeaderIdentity, StickyNav, DESCRIPTION_TEXT_STYLE } from './shared.jsx'
+import { useIsMobile, MobileProductPage } from './mobile.jsx'
 
 /* ── Non-Slip Banana Grip product page — Figma node 334:190 "Nonslip Page",
    pulled directly via MCP. Same header/nav/no-tagline structure as the
@@ -42,7 +43,7 @@ const HEADER_HEIGHT = 130 // divider(90) + nav(40), matches Figma exactly
 const FRAME_HEIGHT = 4824
 const CONTENT_HEIGHT = FRAME_HEIGHT - HEADER_HEIGHT
 
-export default function BananaGripPage() {
+function DesktopBananaGripPage() {
   const time = useLATime()
   usePageZoom()
 
@@ -181,5 +182,34 @@ export default function BananaGripPage() {
         </div>
       </div>
     </div>
+  )
+}
+
+const MOBILE_BLOCKS = [
+      { img: A.bananagripHero, alt: 'Non-Slip Banana Grip', ratio: 623 / 882 },
+      { img: A.bananagripOverlay, alt: 'Non-Slip Banana Grip, alternate view', ratio: 415 / 594 },
+      { row: [
+        { img: A.bananagripSideA, alt: 'Non-Slip Banana Grip detail', ratio: 520 / 735 },
+        { img: A.bananagripSideB, alt: 'Non-Slip Banana Grip detail', ratio: 520 / 735 },
+      ] },
+      { lead: 'Simple is beautiful.', text: "Ergonomic design and intuitive functionality make the Banana Grip easy to adapt to any user. Extensive testing across uneven, wet terrain informed the grip's shape, size, and material choice." },
+      { img: A.bananagripScreenshot1, alt: 'Non-Slip Banana Grip renders', ratio: 1367 / 769 },
+      { img: A.bananagripScreenshot2, alt: 'Non-Slip Banana Grip renders', ratio: 1368 / 811 },
+      { lead: 'One grip, any umbrella', text: "A universal top attachment lets the same grip fit multiple umbrella types, so users aren't locked into a single design." },
+      { img: A.bananagripScreenshot3, alt: 'Non-Slip Banana Grip renders', ratio: 1368 / 770 },
+      { lead: 'Reshape it yourself', text: 'The grip is molded from Polymorph plastic — dip it in hot water and it softens enough to reshape by hand, letting each user form-fit it to their own grip size and shape, then cool back into a rigid hold.' },
+    ]
+
+export default function BananaGripPage() {
+  const isMobile = useIsMobile()
+  if (!isMobile) return <DesktopBananaGripPage />
+  return (
+    <MobileProductPage
+      docTitle="Non Slip Banana Grip"
+      category="Product Design"
+      titleLines={["Non Slip", "Banana Grip"]}
+      lettering="NonSlip"
+      blocks={MOBILE_BLOCKS}
+    />
   )
 }
